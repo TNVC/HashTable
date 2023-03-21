@@ -1,0 +1,7 @@
+*.out
+*.o
+*.s
+*.ii
+*.ods
+objects/
+hashmap

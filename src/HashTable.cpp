@@ -64,7 +64,7 @@ namespace db::collection::map {
     if (!IsValidKey  (key  )) ERROR(ErrorCode::INVALIDKEY  );
     if (!IsValidValue(value)) ERROR(ErrorCode::INVALIDVALUE);
 
-    Node *newNode = (Node *) calloc(1, sizeof(Node));
+    Node *newNode = (Node *) calloc(1, sizeof(Node));//TODO
     if (!newNode) ERROR(ErrorCode::BADALLOC);
 
     if (!CopyKey  (&newNode->key  , key  ))

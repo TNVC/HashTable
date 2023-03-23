@@ -20,9 +20,12 @@ namespace db::hash
   static Hash GetLengthHash       (const void *reference, size_t size);
   static Hash GetSummaryHash      (const void *reference, size_t size);
   static Hash GetSummaryLengthHash(const void *reference, size_t size);
-  static Hash GetROLHash          (const void *reference, size_t size);
-  static Hash GetRORHash          (const void *reference, size_t size);
-  static Hash GetCRCHash          (const void *reference, size_t size);
+  extern "C"
+         Hash GetROLHash          (const void *reference, size_t size);
+  extern "C"
+         Hash GetRORHash          (const void *reference, size_t size);
+  extern "C"
+         Hash GetCRCHash          (const void *reference, size_t size);
 
   static HashType Type = HashType::Const;
 
@@ -109,7 +112,7 @@ namespace db::hash
 
     return hash / size;
   }
-
+#if 0
   static Hash GetROLHash(const void *reference, size_t size)
   {
     if (!reference) return 0;
@@ -164,7 +167,7 @@ namespace db::hash
       }
 
     return hash;
-    /*
+#if 0
     if (!reference) return 0;
 
     const uint8_t *uint8Ref = (const uint8_t *) reference;
@@ -173,7 +176,7 @@ namespace db::hash
       hash =_mm_crc32_u8(hash, uint8Ref[i]);
 
     return (Hash) hash;
-    */
+#endif
   }
-
+#endif
 }

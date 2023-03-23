@@ -114,7 +114,7 @@ namespace db::test {
   {
     assert(result);
 
-    db::hash::SetHashType(db::hash::ROL);
+    db::hash::SetHashType(db::hash::CRC);
 
     *result = {};
     db::collection::map::CreateHashTable(&result->table, TABLE_SIZE);

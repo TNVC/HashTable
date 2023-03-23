@@ -1,7 +1,10 @@
-#include "Hash.h"
-
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+
+#include "Hash.h"
+
+#include <stdint.h>
+#include <x86intrin.h>
 
 #define ERROR(CODE, ...)                        \
   do                                            \
@@ -161,6 +164,16 @@ namespace db::hash
       }
 
     return hash;
+    /*
+    if (!reference) return 0;
+
+    const uint8_t *uint8Ref = (const uint8_t *) reference;
+    uint32_t hash = 0;
+    for (size_t i = 0; i < size; ++i)
+      hash =_mm_crc32_u8(hash, uint8Ref[i]);
+
+    return (Hash) hash;
+    */
   }
 
 }

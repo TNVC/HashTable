@@ -17,7 +17,7 @@ namespace db::loader {
                       )
   {
     assert(map);
-    assert(map);
+    assert(path);
 
     FILE *file = fopen(path, "r");
     if (!file) return nullptr;
@@ -35,7 +35,9 @@ namespace db::loader {
     do
       {
         value = strchr(key, '=');
-        if (!value) { free(buffer); return nullptr; }
+        if (!value) {
+          free(buffer); return nullptr;
+        }
 
         *value++ = '\0';
 
@@ -45,7 +47,7 @@ namespace db::loader {
         db::collection::map::Put(map, key, value);
 
         key = temp;
-      } while (key);
+      } while (key && *key);
 
     return buffer;
   }

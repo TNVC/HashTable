@@ -51,7 +51,6 @@ GetROLHash:
 
 .end:
   ret                           ; return hash
-
 global GetCRCHash
   ;; GetCRCHash
   ;; @param  [rdi] reference - const pointer to object

@@ -147,6 +147,7 @@ namespace db::hash
 
   static Hash GetCRCHash(const void *reference, size_t size)
   {
+#if 0
     if (!reference) return 0;
 
     const Hash polynomial = 0x04C11DB7;
@@ -167,7 +168,7 @@ namespace db::hash
       }
 
     return hash;
-#if 0
+#endif
     if (!reference) return 0;
 
     const uint8_t *uint8Ref = (const uint8_t *) reference;
@@ -176,7 +177,6 @@ namespace db::hash
       hash =_mm_crc32_u8(hash, uint8Ref[i]);
 
     return (Hash) hash;
-#endif
   }
 #endif
 }

@@ -58,14 +58,12 @@ namespace db::test {
     double E2 = .0;
     for (size_t i = 0; i < TABLE_SIZE; ++i)
       {
-        unsigned short count = 0;
-        db::collection::map::Node *temp = table.table[i];
-        for ( ; temp; temp = temp->next) ++count;
+        size_t count = table.table[i].size;
 
-        E  += count;
-        E2 += count*count;
+        E  += (double) count;
+        E2 += (double) count*(double) count;
 
-        result->allocation[i] = count;
+        result->allocation[i] = (unsigned short) count;
       }
 
     E  /= TABLE_SIZE;

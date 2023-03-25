@@ -20,21 +20,30 @@ namespace db::collection::map {
   typedef String Key  ;
   typedef String Value;
 
+  typedef char byte;
+
+  struct HeapNode {
+    HeapNode *next;
+    size_t nodeSize;
+  };
+
+  struct Heap {
+    size_t nodeSize;
+    HeapNode *freeList;
+    byte *buffer;
+  };
+
   struct Node {
     Key     key;
     Value value;
     Node *next;
   };
 
-  struct NodeTable {
-    size_t size;
-    size_t capacity;
-  };
-
   struct HashTable {
     size_t size;
     size_t capacity;
     Node **table;
+    Heap heap;
   };
 
   bool  CreateHashTable(

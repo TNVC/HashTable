@@ -15,6 +15,102 @@
 namespace db::collection::map {
 
   const size_t DEFAULT_CAPACITY = 17;
+  const size_t      SIZE_FACTOR =  3;
+
+  static bool CreateHeap(
+                         Heap *heap,
+                         size_t size,
+                         Error *error
+                        );
+  static void *Malloc(
+                      Heap *heap,
+                      size_t size,
+                      Error *error
+                     );
+  static void Free(
+                   Heap *heap,
+                   void *address,
+                   size_t size,
+                   Error *error
+                  );
+
+  static bool CreateHeap(
+                         Heap *heap,
+                         size_t size,
+                         Error *error
+                        )
+  {
+    if (!heap || !size) ERROR(ErrorCode::NULLPTR, false);
+
+    size_t heapSize = size*SIZE_FACTOR;
+    byte *temp = (byte *) calloc(heapSize, sizeof(Node));
+    if (!temp) ERROR(ErrorCode::BADALLOC, false);
+    *((HeapNode *) temp) = { nullptr, heapSize };
+
+    heap->nodeSize = heapSize;
+    heap->freeList = (HeapNode *) temp;
+    heap->buffer   = temp;
+
+    return true;
+  }
+
+  static void *Malloc(
+                      Heap *heap,
+                      size_t size,
+                      Error *error
+                     )
+  {
+    if (!heap) ERROR(ErrorCode::NULLPTR, nullptr);
+
+    if (!size) return nullptr;
+
+    if (!heap->freeList)
+      ERROR(ErrorCode::NULLPTR, nullptr);
+
+    if (heap->freeList->nodeSize < size)
+      ERROR(ErrorCode::NULLPTR, nullptr);
+
+    byte *pointer = (byte *) heap->freeList;
+
+    if (heap->freeList->nodeSize == size)
+      {
+        heap->freeList = heap->freeList->next;
+        return pointer;
+      }
+
+    size_t newSize =
+      heap->freeList->nodeSize - size;
+    HeapNode *temp =
+      heap->freeList->next;
+
+    heap->freeList = (HeapNode *)
+      (pointer + size*sizeof(Node));
+
+    heap->freeList->nodeSize =
+      newSize;
+    heap->freeList->next = temp;
+
+    return pointer;
+  }
+
+  static void Free(
+                   Heap *heap,
+                   void *address,
+                   size_t size,
+                   Error *error
+                  )
+  {
+    if (!heap)
+      ERROR(ErrorCode::NULLPTR);
+
+    if (!address || !size) return;
+
+    HeapNode *freeNode = (HeapNode *) address;
+    freeNode->nodeSize = size;
+    freeNode->next = heap->freeList;
+
+    heap->freeList = freeNode;
+  }
 
   bool CreateHashTable(HashTable *hashTable, size_t capacity, Error *error)
   {
@@ -23,6 +119,10 @@ namespace db::collection::map {
     capacity = capacity ? capacity : DEFAULT_CAPACITY;
     hashTable->table = (Node **) calloc(capacity, sizeof(Node *));
     if (!hashTable->table) ERROR(ErrorCode::BADALLOC, false);
+
+
+    if (!CreateHeap(&hashTable->heap, capacity, error))
+      return false;
 
     hashTable->size     =        0;
     hashTable->capacity = capacity;
@@ -34,19 +134,10 @@ namespace db::collection::map {
   {
     if (!hashTable) ERROR(ErrorCode::NULLPTR, false);
 
-    Node *temp = nullptr;
-    for (size_t i = 0; i < hashTable->capacity; ++i)
-      while (hashTable->table[i])
-        {
-          temp = hashTable->table[i];
-          hashTable->table[i] = temp->next;
-          free(temp);
-        }
     free(hashTable->table);
+    free(hashTable->heap.buffer);
 
-    hashTable->size     =       0;
-    hashTable->capacity =       0;
-    hashTable->table    = nullptr;
+    *hashTable = {};
 
     return true;
   }
@@ -63,7 +154,8 @@ namespace db::collection::map {
     if (!IsValidKey  (key  )) ERROR(ErrorCode::INVALIDKEY  );
     if (!IsValidValue(value)) ERROR(ErrorCode::INVALIDVALUE);
 
-    Node *newNode = (Node *) calloc(1, sizeof(Node));
+    Node *newNode = (Node *)
+      Malloc(&hashTable->heap, 1, error);
     if (!newNode) ERROR(ErrorCode::BADALLOC);
 
     if (!CopyKey  (&newNode->key  , key  ))
@@ -199,7 +291,7 @@ namespace db::collection::map {
     previous->next = temp->next;
     CopyValue(value, temp->value);
 
-    free(temp);
+    Free(&hashTable->heap, temp, 1, error);
   }
 
   bool IsValidKey  (const Key   key  ) { return key  ; }

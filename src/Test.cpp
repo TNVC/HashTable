@@ -106,7 +106,7 @@ namespace db::test {
             result->name,
             average
            );
-    //system(buffer);
+    system(buffer);
     free(buffer);
   }
 
@@ -114,7 +114,7 @@ namespace db::test {
   {
     assert(result);
 
-    db::hash::SetHashType(db::hash::ROR);
+    db::hash::SetHashType(db::hash::GNU);
 
     *result = {};
     db::collection::map::CreateHashTable(&result->table, TABLE_SIZE);

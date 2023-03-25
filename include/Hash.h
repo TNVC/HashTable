@@ -22,6 +22,7 @@ namespace db::hash
     ROL,
     ROR,
     CRC,
+    GNU,
     MAX,
   };
 

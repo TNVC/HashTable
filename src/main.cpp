@@ -24,7 +24,7 @@ void TestHashes()
   db::test::CreateTest(&result);
 
   char testName[db::test::MAX_TEST_NAME_SIZE]{};
-  for (int type = db::hash::Const; type <= db::hash::CRC; ++type)
+  for (int type = db::hash::Const; type <= db::hash::GNU; ++type)
     {
       sprintf(
               testName,

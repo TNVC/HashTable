@@ -48,17 +48,19 @@ namespace db::test {
     printf("Loading data for %sHash test...\n", ToString(type));
     char * firstBuffer =
       db::loader::LoadProperties(&table, "./source/first.properties");
-    //char *secondBuffer =
-    //db::loader::LoadProperties(&table, "./source/second.properties");
-    //char * thirdBuffer =
-    //db::loader::LoadProperties(&table, "./source/third.properties");
+    char *secondBuffer =
+      db::loader::LoadProperties(&table, "./source/second.properties");
+    char * thirdBuffer =
+      db::loader::LoadProperties(&table, "./source/third.properties");
 
     printf("Analysis data for %sHash test...\n", ToString(type));
     double E  = .0;
     double E2 = .0;
     for (size_t i = 0; i < TABLE_SIZE; ++i)
       {
-        size_t count = table.table[i].size;
+        size_t count = 0;
+        db::collection::map::Node *temp = table.table[i];
+        for ( ; temp; temp = temp->next) ++count;
 
         E  += (double) count;
         E2 += (double) count*(double) count;
@@ -73,8 +75,8 @@ namespace db::test {
     result->totalCount = table.size;
 
     free( firstBuffer);
-    //free(secondBuffer);
-    //free( thirdBuffer);
+    free(secondBuffer);
+    free( thirdBuffer);
     db::collection::map::DestroyHashTable(&table);
   }
 
@@ -104,7 +106,7 @@ namespace db::test {
             result->name,
             average
            );
-    system(buffer);
+    //system(buffer);
     free(buffer);
   }
 
@@ -112,7 +114,7 @@ namespace db::test {
   {
     assert(result);
 
-    db::hash::SetHashType(db::hash::CRC);
+    db::hash::SetHashType(db::hash::ROR);
 
     *result = {};
     db::collection::map::CreateHashTable(&result->table, TABLE_SIZE);
@@ -163,9 +165,8 @@ namespace db::test {
     gettimeofday(&start, nullptr);
     for (size_t i = 0; i < SEARCH_COUNT; ++i)
       {
-        size_t index = (size_t) rand() % 10;
         bool wasFound =
-          db::collection::map::ContainsKey(&result->table, (char *) searchTable[index]);
+          db::collection::map::ContainsKey(&result->table, (char *) searchTable[i % 10]);
         if (!wasFound)
           printf("Test failed: \"%s\"\n", searchTable[i]);
       }

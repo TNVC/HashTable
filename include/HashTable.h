@@ -23,18 +23,18 @@ namespace db::collection::map {
   struct Node {
     Key     key;
     Value value;
+    Node *next;
   };
 
   struct NodeTable {
     size_t size;
     size_t capacity;
-    Node *table;
   };
 
   struct HashTable {
     size_t size;
     size_t capacity;
-    NodeTable *table;
+    Node **table;
   };
 
   bool  CreateHashTable(

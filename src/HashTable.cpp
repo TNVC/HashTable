@@ -21,7 +21,7 @@ namespace db::collection::map {
     if (!hashTable) ERROR(ErrorCode::NULLPTR, false);
 
     capacity = capacity ? capacity : DEFAULT_CAPACITY;
-    hashTable->table = (NodeTable *) calloc(capacity, sizeof(NodeTable));
+    hashTable->table = (Node **) calloc(capacity, sizeof(Node *));
     if (!hashTable->table) ERROR(ErrorCode::BADALLOC, false);
 
     hashTable->size     =        0;
@@ -34,8 +34,14 @@ namespace db::collection::map {
   {
     if (!hashTable) ERROR(ErrorCode::NULLPTR, false);
 
+    Node *temp = nullptr;
     for (size_t i = 0; i < hashTable->capacity; ++i)
-      free(hashTable->table[i].table);
+      while (hashTable->table[i])
+        {
+          temp = hashTable->table[i];
+          hashTable->table[i] = temp->next;
+          free(temp);
+        }
     free(hashTable->table);
 
     hashTable->size     =       0;
@@ -57,29 +63,28 @@ namespace db::collection::map {
     if (!IsValidKey  (key  )) ERROR(ErrorCode::INVALIDKEY  );
     if (!IsValidValue(value)) ERROR(ErrorCode::INVALIDVALUE);
 
+    Node *newNode = (Node *) calloc(1, sizeof(Node));
+    if (!newNode) ERROR(ErrorCode::BADALLOC);
+
+    if (!CopyKey  (&newNode->key  , key  ))
+      { free(newNode); ERROR(ErrorCode::UNKNOWN); }
+    if (!CopyValue(&newNode->value, value))
+      { free(newNode); ERROR(ErrorCode::UNKNOWN); }
+
     ++hashTable->size;
 
     hash::Hash hash = hash::GetHash(key, strlen(key));
     hash %= hashTable->capacity;
 
-    size_t capacity = hashTable->table[hash].capacity;
-    size_t index    = hashTable->table[hash].size++;
-
-    if (index == capacity)
+    Node *temp = hashTable->table[hash];
+    if (!temp)
       {
-        size_t newCapacity = 2*capacity + 1;
-        hashTable->table[hash].table = (Node *)
-          realloc(hashTable->table[hash].table, newCapacity*sizeof(Node));
-        if (!hashTable->table[hash].table)
-          ERROR(ErrorCode::BADALLOC);
-        hashTable->table[hash].capacity = newCapacity;
+        hashTable->table[hash] = newNode;
+        return;
       }
 
-    Node *newNode = hashTable->table[hash].table + index;
-    if (!CopyKey  (&newNode->key  , key  ))
-      { free(newNode); ERROR(ErrorCode::UNKNOWN); }
-    if (!CopyValue(&newNode->value, value))
-      { free(newNode); ERROR(ErrorCode::UNKNOWN); }
+    for ( ; temp->next; temp = temp->next) continue;
+    temp->next = newNode;
   }
 
   void Get(
@@ -97,17 +102,16 @@ namespace db::collection::map {
     hash::Hash hash = hash::GetHash(key, strlen(key));
     hash %= hashTable->capacity;
 
-    Node *temp = hashTable->table[hash].table;
+    Node *temp = hashTable->table[hash];
     if (!temp) ERROR(ErrorCode::HASNTKEY);
 
-    if (!hashTable->table[hash].size)
+    if (!temp->next)
       {
         CopyValue(value, temp->value);
         return;
       }
 
-    size_t size = hashTable->table[hash].size;
-    for (size_t i = 0; i < size; ++i, ++temp)
+    for ( ; temp->next; temp = temp->next)
       if (AreKeysEqual(key, temp->key)) break;
     if (!AreKeysEqual(key, temp->key)) ERROR(ErrorCode::HASNTKEY);
 
@@ -127,7 +131,7 @@ namespace db::collection::map {
     hash::Hash hash = hash::GetHash(key, strlen(key));
     hash %= hashTable->capacity;
 
-    return hashTable->table[hash].size;
+    return hashTable->table[hash];
   }
 
   bool ContainsValue(
@@ -142,11 +146,10 @@ namespace db::collection::map {
 
     for (size_t i = 0; i < hashTable->capacity; ++i)
       {
-        Node *temp = hashTable->table[i].table;
+        Node *temp = hashTable->table[i];
         if (!temp) continue;
 
-        size_t size = hashTable->table[i].size;
-        for (size_t j = 0; j < size; ++j, ++temp)
+        for ( ; temp->next; temp = temp->next)
           if (AreValuesEqual(value, temp->value))
             return true;
       }
@@ -176,21 +179,27 @@ namespace db::collection::map {
     hash::Hash hash = hash::GetHash(key, strlen(key));
     hash %= hashTable->capacity;
 
-    if (!hashTable->table[hash].size)
-      ERROR(ErrorCode::HASNTKEY);
+    Node *temp = hashTable->table[hash];
+    if (!temp) ERROR(ErrorCode::HASNTKEY);
 
-    Node *temp = hashTable->table[hash].table;
-    size_t size = hashTable->table[hash].size;
-    for (size_t i = 0; i < size; ++i, ++temp)
+    if (!temp->next)
+      {
+        hashTable->table[hash] = nullptr;
+        CopyValue(value, temp->value);
+        free(temp);
+        return;
+      }
+    Node *previous = nullptr;
+    for ( ; temp->next; previous = temp, temp = temp->next)
       if (AreKeysEqual(key, temp->key)) break;
-    if (!AreKeysEqual(key, temp->key))
-      ERROR(ErrorCode::HASNTKEY);
+    if (!AreKeysEqual(key, temp->key)) ERROR(ErrorCode::HASNTKEY);
 
-    --hashTable->table[hash].size;
+    --hashTable->table;
+
+    previous->next = temp->next;
     CopyValue(value, temp->value);
 
-    size_t capacity = hashTable->table[hash].capacity;
-    memmove(temp, temp + 1, (capacity - size)*sizeof(Node));
+    free(temp);
   }
 
   bool IsValidKey  (const Key   key  ) { return key  ; }

@@ -16,16 +16,24 @@
 namespace db::hash
 {
 
+  const Hash START_HASH = 17;
+
   static Hash GetConstHash        (const void *reference, size_t size);
   static Hash GetLengthHash       (const void *reference, size_t size);
   static Hash GetSummaryHash      (const void *reference, size_t size);
   static Hash GetSummaryLengthHash(const void *reference, size_t size);
   extern "C"
+  //static
          Hash GetROLHash          (const void *reference, size_t size);
   extern "C"
+  //static
          Hash GetRORHash          (const void *reference, size_t size);
   extern "C"
+  //static
          Hash GetCRCHash          (const void *reference, size_t size);
+  extern "C"
+  //static
+         Hash GetGNUHash          (const void *reference, size_t size);
 
   static HashType Type = HashType::Const;
 
@@ -43,6 +51,7 @@ namespace db::hash
       case ROL          : return           "ROL";
       case ROR          : return           "ROR";
       case CRC          : return           "CRC";
+      case GNU          : return           "GNU";
       default           : return       "Unknown";
       }
   }
@@ -72,6 +81,7 @@ namespace db::hash
         CASE(ROL);
         CASE(ROR);
         CASE(CRC);
+        CASE(GNU);
       default:
         return GetConstHash(reference, size);
       }
@@ -112,6 +122,7 @@ namespace db::hash
 
     return hash / size;
   }
+
 #if 0
   static Hash GetROLHash(const void *reference, size_t size)
   {
@@ -147,7 +158,6 @@ namespace db::hash
 
   static Hash GetCRCHash(const void *reference, size_t size)
   {
-#if 0
     if (!reference) return 0;
 
     const Hash polynomial = 0x04C11DB7;
@@ -168,15 +178,19 @@ namespace db::hash
       }
 
     return hash;
-#endif
+  }
+
+  static Hash GetGNUHash(const void *reference, size_t size)
+  {
     if (!reference) return 0;
 
     const uint8_t *uint8Ref = (const uint8_t *) reference;
-    uint32_t hash = 0;
+    Hash hash = START_HASH;
     for (size_t i = 0; i < size; ++i)
-      hash =_mm_crc32_u8(hash, uint8Ref[i]);
+      hash = (hash << 5) + hash + uint8Ref[i];
 
-    return (Hash) hash;
+    return hash;
   }
 #endif
+
 }

@@ -8,7 +8,7 @@
 namespace db::test {
 
   const size_t MAX_TEST_NAME_SIZE = 1 << 8;
-  const size_t TABLE_SIZE = 112111;//10691;//4789;
+  const size_t TABLE_SIZE = 112111;//13441;//7879;//4789;//607;//10691;//
 
   struct TestHash {
     char name[MAX_TEST_NAME_SIZE];

@@ -16,6 +16,7 @@ namespace db::collection::map {
 
   const size_t DEFAULT_CAPACITY = 17;
   const size_t      SIZE_FACTOR =  3;
+  const size_t      VECTRO_SIZE = 32;
 
   static bool CreateHeap(
                          Heap *heap,
@@ -165,7 +166,7 @@ namespace db::collection::map {
 
     ++hashTable->size;
 
-    hash::Hash hash = hash::GetHash(key, strlen(key));
+    hash::Hash hash = hash::GetHash(key, VECTRO_SIZE);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
@@ -191,7 +192,7 @@ namespace db::collection::map {
 
     if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY);
 
-    hash::Hash hash = hash::GetHash(key, strlen(key));
+    hash::Hash hash = hash::GetHash(key, VECTRO_SIZE);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
@@ -220,7 +221,7 @@ namespace db::collection::map {
 
     if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY, false);
 
-    hash::Hash hash = hash::GetHash(key, strlen(key));
+    hash::Hash hash = hash::GetHash(key, VECTRO_SIZE);
     hash %= hashTable->capacity;
 
     return hashTable->table[hash];
@@ -268,7 +269,7 @@ namespace db::collection::map {
 
     if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY);
 
-    hash::Hash hash = hash::GetHash(key, strlen(key));
+    hash::Hash hash = hash::GetHash(key, VECTRO_SIZE);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
@@ -293,18 +294,5 @@ namespace db::collection::map {
 
     Free(&hashTable->heap, temp, 1, error);
   }
-
-  bool IsValidKey  (const Key   key  ) { return key  ; }
-  bool IsValidValue(const Value value) { return value; }
-
-  bool CopyKey  (Key   *target, const Key   source)
-  { *target = source; return true; }
-  bool AreKeysEqual  (const Key   first, const Key   second)
-  { return !strcmp(first, second); }
-
-  bool CopyValue(Value *target, const Value source)
-  { *target = source; return true; }
-  bool AreValuesEqual(const Value first, const Value second)
-  { return !strcmp(first, second); }
 
 }

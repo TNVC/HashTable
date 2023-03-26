@@ -1,6 +1,7 @@
 #include "Test.h"
 
 #include "PropertiesReader.h"
+#include "DataBaseReader.h"
 #include "Hash.h"
 
 #include <stdlib.h>
@@ -46,12 +47,8 @@ namespace db::test {
     db::collection::map::CreateHashTable(&table, TABLE_SIZE);
 
     printf("Loading data for %sHash test...\n", ToString(type));
-    char * firstBuffer =
-      db::loader::LoadProperties(&table, "./source/first.properties");
-    char *secondBuffer =
-      db::loader::LoadProperties(&table, "./source/second.properties");
-    char * thirdBuffer =
-      db::loader::LoadProperties(&table, "./source/third.properties");
+    char *buffer =
+      db::loader::LoadDataBase(&table, "./source/dict.db");
 
     printf("Analysis data for %sHash test...\n", ToString(type));
     double E  = .0;
@@ -74,9 +71,7 @@ namespace db::test {
     printf("D = %lg\n", E2 - E*E);
     result->totalCount = table.size;
 
-    free( firstBuffer);
-    free(secondBuffer);
-    free( thirdBuffer);
+    free(buffer);
     db::collection::map::DestroyHashTable(&table);
   }
 
@@ -120,21 +115,15 @@ namespace db::test {
     db::collection::map::CreateHashTable(&result->table, TABLE_SIZE);
 
     printf("Loading data for search test...\n");
-    result->freeTable[0] =
-      db::loader::LoadProperties(&result->table, "./source/first.properties");
-    result->freeTable[1] =
-      db::loader::LoadProperties(&result->table, "./source/second.properties");
-    result->freeTable[2] =
-      db::loader::LoadProperties(&result->table, "./source/third.properties");
+    result->freeTable =
+      db::loader::LoadDataBase(&result->table, "./source/dict.db");
   }
 
   void DestroyTest(TestTable *result)
   {
     assert(result);
 
-    free(result->freeTable[0]);
-    free(result->freeTable[1]);
-    free(result->freeTable[2]);
+    free(result->freeTable);
 
     db::collection::map::DestroyHashTable(&result->table);
 
@@ -153,11 +142,18 @@ namespace db::test {
   {
     assert(result);
 
-    static const char *searchTable[] =
+    static const char searchTable[][30] =
       {
-        "zloty", "yellow", "write", "workforce", "wordy",
-        "vocational teachers", "unrehearsed", "triggering",
-        "tennessean", "systolization"
+        {'z', 'l', 'o', 't', 'y'},
+        {'y', 'e', 'l', 'l', 'o', 'w'},
+        {'w', 'r', 'i', 't', 'e'},
+        {'w', 'o', 'r', 'k', 'f', 'o', 'r', 'c', 'e'},
+        {'w', 'o', 'r', 'd', 'y'},
+        {'v', 'o', 'c', 'a', 't', 'i', 'o', 'n', 'a', 'l', ' ', 't', 'e', 'a', 'c', 'h', 'e', 'r', 's'},
+        {'u', 'n', 'r', 'e', 'h', 'e', 'a', 'r', 's', 'e', 'd'},
+        {'t', 'r', 'i', 'g', 'g', 'e', 'r', 'i', 'n', 'g'},
+        {'t', 'e', 'n', 'n', 'e', 's', 's', 'e', 'a', 'n'},
+        {'s', 'y', 's', 't', 'o', 'l', 'i', 'z', 'a', 't', 'i', 'o', 'n'}
       };
 
     printf("Start search test.\n");
@@ -166,7 +162,7 @@ namespace db::test {
     for (size_t i = 0; i < SEARCH_COUNT; ++i)
       {
         bool wasFound =
-          db::collection::map::ContainsKey(&result->table, (char *) searchTable[i % 10]);
+          db::collection::map::ContainsKey(&result->table, (__m256i *) searchTable[i % 10]);
         if (!wasFound)
           printf("Test failed: \"%s\"\n", searchTable[i]);
       }

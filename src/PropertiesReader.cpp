@@ -1,3 +1,5 @@
+#if 0
+
 #include "PropertiesReader.h"
 
 #include <string.h>
@@ -62,3 +64,5 @@ namespace db::loader {
   }
 
 }
+
+#endif

@@ -20,7 +20,7 @@ namespace db::test {
   struct TestTable {
     char name[MAX_TEST_NAME_SIZE];
     db::collection::map::HashTable table;
-    char *freeTable[3];
+    char *freeTable;
   };
 
   void  CreateTest(TestHash *result);

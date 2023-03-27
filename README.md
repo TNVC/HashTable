@@ -31,7 +31,7 @@ Hash GetHash(const void *value, size_t size)
 Хеш-функий возвращает константу для каждого полученного значения.
 Самая легкая реализация, но функция обладает крайней неэффективностью.
 Непременима.
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#ConstHash#607.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#ConstHash#607.png?raw=true)
 
 #### Хеш-функия №2: Длина значения.
 ```clike=
@@ -42,7 +42,7 @@ Hash GetHash(const void *value, size_t size)
 ```
 Хеш-функий возвращает длину полученого значения. Очевидно, для задач с похошей длиной ключей неэффективна(наприме: хранение пар имя-фамилия).
 Непременима.
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#LengthHash#607.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#LengthHash#607.png?raw=true)
 
 #### Хеш-функия №3: Сумма элементов значения.
 ```clike=
@@ -57,9 +57,9 @@ Hash GetHash(const void *value, size_t size)
 Хеш-функий возвращает сумму элементов полученого значения. Распределение данной реализации будет зависить от диапазона значений элемента значения и средней длины значений.
 Имеет лучшее распределение, чем все предыдущие реализации, но качество распределения сильно зависить от набора данных.
 Непреминима.
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#SummaryHash#607.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#SummaryHash#7879.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#SummaryHash#13441.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#SummaryHash#607.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#SummaryHash#7879.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#SummaryHash#13441.png?raw=true)
 
 #### Хеш-функия №4: Среднее значение элемента.
 ```clike=
@@ -75,7 +75,7 @@ Hash GetHash(const void *value, size_t size)
 Хеш-функий возвращает среднее значение элемента полученого значения. Распределение данной реализации пиками будет совпадать с частотностью элементов.
 Распределение будет зависить от частотности элементов значений.
 Непренимима.
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#SummaryLengthHash#607.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#SummaryLengthHash#607.png?raw=true)
 
 #### Хеш-функия №5: Сумма элементов значения при циклическом сдвиге вправо.
 ```clike=
@@ -89,9 +89,9 @@ Hash GetHash(const void *value, size_t size)
 ```
 Хеш-функий возвращает сумму элементов полученого во время циклического сдвига вправо. Данная реализация имеет хорошее распределение.
 Приемлема для использования.
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#RORHash#607.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#RORHash#7879.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#RORHash#13441.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#RORHash#607.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#RORHash#7879.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#RORHash#13441.png?raw=true)
 
 #### Хеш-функия №6: Сумма элементов значения при циклическом сдвиге влево.
 ```clike=
@@ -105,9 +105,9 @@ Hash GetHash(const void *value, size_t size)
 ```
 Подобна предыдущей реализации, только циклический сдвиг происходит влево.
 Приемлема для использования.
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#ROLHash#607.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#ROLHash#7879.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#ROLHash#13441.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#ROLHash#607.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#ROLHash#7879.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#ROLHash#13441.png?raw=true)
 
 #### Хеш-функия №7: CRC.
 ```clike=
@@ -126,9 +126,9 @@ Hash GetHash(const void *value, size_t size)
 ```
 Алгоритм данной хеш-функции можно описать как полиномиального деления(вместо деления - иклучаещее или) в столбик.
 Приемлема для использования.
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#CRCHash#607.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#CRCHash#7879.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#CRCHash#13441.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#CRCHash#607.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#CRCHash#7879.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#CRCHash#13441.png?raw=true)
 
 #### Хеш-функия №8: GNU.
 ```clike=
@@ -142,20 +142,20 @@ Hash GetHash(const void *value, size_t size)
 ```
 Алгоритм данной хеш-функции использует линнейную комбинацию элементов значения  с коэффициэнтами, получеными перемножением простых чисел.
 Приемлема для использования.
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#GNUHash#607.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#GNUHash#7879.png)
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#GNUHash#13441.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#GNUHash#607.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#GNUHash#7879.png?raw=true)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/DefaultTable#O3#GNUHash#13441.png?raw=true)
 
 #### Итоги главы
 
 Так как кроме последних четырех реализаций, дисперсия представленых реализаций плохая, то она не будет отраженна в гистограммах.
 
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/HashDispertion.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/HashDispertion.png?raw=true)
 
 Также из ранее представленных графиках распределения видно, что третья реализация обладает хорошей дисперсией в первом эксперименте, но это из-за особеностей конкретного набора данных. Как видно в большем наборе данных дисперсия этой реализации резко ухудшается.
 Можно заметить что, алгоритм 5 и 6 реализации отличаются минимально, но у них разная дисперсия. Но как можно наблюдать из улучшенной модели(Из раздела "Оптимизация 2") видно, что дисперсия шестой реализации в 2 раза лучше пятой.
 
-![alt text](https://github.com/TNVC/HashTable/blob/master/plots/HashDispertionAlso.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/plots/HashDispertionAlso.png?raw=true)
 
 Выяснение данного явления требует тчательного анализа, на который у нас нет возможности. Поэтому будем апирировать больше апостеорным объяснением, чем априорным.
 Нам известно, что деление на степень двойки отрасывает n младших разрядов(то есть информация теряется). Выдвенем следующее предположение: При делении на другие числа теряется не вся информация, но большая ее часть. Так как дисперсия ROR хуже, чем ROL, то можно сделать вывод на основе предположения, что ROR стремится аккумулировать данные в младшей части значения, когда ROL, наоборот, в старшей.
@@ -181,13 +181,13 @@ Hash GetHash(const void *value, size_t size)
 <summary> O0 </summary>
 
 #### ROR
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O0_ROR_start.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O0_ROR_start.png?raw=true)
 #### ROL
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O0_ROL_start.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O0_ROL_start.png?raw=true)
 #### CRC
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O0_CRC_start.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O0_CRC_start.png?raw=true)
 #### GNU
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O0_GNU_start.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O0_GNU_start.png?raw=true)
 
 </details>
 
@@ -195,13 +195,13 @@ Hash GetHash(const void *value, size_t size)
 <summary> O3 </summary>
 
 #### ROR
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O3_ROR_start.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O3_ROR_start.png?raw=true)
 #### ROL
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O3_ROL_start.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O3_ROL_start.png?raw=true)
 #### CRC
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O3_CRC_start.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O3_CRC_start.png?raw=true)
 #### GNU
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O3_GNU_start.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#0_start/O3_GNU_start.png?raw=true)
 
 </details>
 
@@ -231,11 +231,11 @@ Hash GetHash(const void *value, size_t size)
 <summary> O0 </summary>
 
 #### ROR
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#1_asm/O0_ROR_asm.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#1_asm/O0_ROR_asm.png?raw=true)
 #### ROL
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#1_asm/O0_ROL_asm.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#1_asm/O0_ROL_asm.png?raw=true)
 #### CRC
-![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#1_asm/O0_ROR_asm.png)
+![alt text](https://github.com/TNVC/HashTable/blob/master/callgrind/#1_asm/O0_ROR_asm.png?raw=true)
 #### GNU
 
 

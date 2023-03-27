@@ -1,3 +1,5 @@
+#if 0
+
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -15,7 +17,6 @@
 
 namespace db::hash
 {
-
   const Hash START_HASH = 17;
 
   static Hash GetConstHash        (const void *reference, size_t size);
@@ -194,3 +195,5 @@ namespace db::hash
 #endif
 
 }
+
+#endif

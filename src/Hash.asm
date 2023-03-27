@@ -52,11 +52,13 @@ GetROLHash:
 .end:
   ret                           ; return hash
 
+global GetHash
 global GetCRCHash
   ;; GetCRCHash
   ;; @param  [rdi] reference - const pointer to object
   ;; @param  [rsi] size      - size of object
   ;; @return [rax] Hash(size_t)
+GetHash:
 GetCRCHash:
 
   xor rax, rax                  ; RAX = 0x0
@@ -64,15 +66,10 @@ GetCRCHash:
   cmp rdi, 0x0                  ;|
   je .end                       ; | if (!reference) return 0x0
 
-  jmp .check
-.start:
-  movzx rsi, byte [rdi]         ;|
-  crc32 eax, esi                ; |
-  inc rdi                       ; | RAX = CRC32(RAX, *reference++)
-
-.check:                         ;|
-  cmp byte [rdi], 0x0           ; |
-  jne .start                    ; | if (*reference) goto LoopStart
+  crc32 rax, qword [rdi + 0x00]
+  crc32 rax, qword [rdi + 0x08]
+  crc32 rax, qword [rdi + 0x10]
+  crc32 rax, qword [rdi + 0x18]
 
 .end:
   ret                           ; return hash

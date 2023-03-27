@@ -13,6 +13,7 @@ namespace db::hash
     INVALIDTYPE  = 1 << 0,
   };
 
+#if 0
   enum HashType {
     MIN,
     Const,
@@ -26,10 +27,11 @@ namespace db::hash
     MAX,
   };
 
-
   const char *ToString(HashType type, Error *error = nullptr);
 
   bool SetHashType(HashType type, Error *error = nullptr);
-  Hash GetHash(const void *reference, size_t size);
+#endif
+
+  extern "C" Hash GetHash(const void *reference, size_t size);
 
 }

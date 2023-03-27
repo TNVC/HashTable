@@ -20,6 +20,7 @@ int main()
 
 void TestHashes()
 {
+#if 0
   db::test::TestHash result{};
   db::test::CreateTest(&result);
 
@@ -39,6 +40,7 @@ void TestHashes()
     }
 
   db::test::DestroyTest(&result);
+#endif
 }
 
 void TestTable()

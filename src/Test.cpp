@@ -16,6 +16,7 @@ namespace db::test {
   const size_t FILE_SIZE = 60;
   const size_t SEARCH_COUNT = 300000;
 
+#if 0
   void CreateTest(TestHash *result)
   {
     assert(result);
@@ -104,12 +105,13 @@ namespace db::test {
     system(buffer);
     free(buffer);
   }
+#endif
 
   void CreateTest(TestTable *result)
   {
     assert(result);
 
-    db::hash::SetHashType(db::hash::GNU);
+    //db::hash::SetHashType(db::hash::CRC);
 
     *result = {};
     db::collection::map::CreateHashTable(&result->table, TABLE_SIZE);
@@ -142,14 +144,15 @@ namespace db::test {
   {
     assert(result);
 
-    static const char searchTable[][30] =
+    static char searchTable[][32] =
       {
         {'z', 'l', 'o', 't', 'y'},
         {'y', 'e', 'l', 'l', 'o', 'w'},
         {'w', 'r', 'i', 't', 'e'},
         {'w', 'o', 'r', 'k', 'f', 'o', 'r', 'c', 'e'},
         {'w', 'o', 'r', 'd', 'y'},
-        {'v', 'o', 'c', 'a', 't', 'i', 'o', 'n', 'a', 'l', ' ', 't', 'e', 'a', 'c', 'h', 'e', 'r', 's'},
+        {'v', 'o', 'c', 'a', 't', 'i', 'o', 'n', 'a', 'l', ' ',
+         't', 'e', 'a', 'c', 'h', 'e', 'r', 's'},
         {'u', 'n', 'r', 'e', 'h', 'e', 'a', 'r', 's', 'e', 'd'},
         {'t', 'r', 'i', 'g', 'g', 'e', 'r', 'i', 'n', 'g'},
         {'t', 'e', 'n', 'n', 'e', 's', 's', 'e', 'a', 'n'},
@@ -162,9 +165,12 @@ namespace db::test {
     for (size_t i = 0; i < SEARCH_COUNT; ++i)
       {
         bool wasFound =
-          db::collection::map::ContainsKey(&result->table, (__m256i *) searchTable[i % 10]);
+          db::collection::map::ContainsKey(
+                                           &result->table,
+                                           (__m256i *) searchTable[i % 10]
+                                           );
         if (!wasFound)
-          printf("Test failed: \"%s\"\n", searchTable[i]);
+          printf("Test failed: \"%s\"\n", searchTable[i % 10]);
       }
     gettimeofday(&stop , nullptr);
     printf("End search test. Time: %ld\n",

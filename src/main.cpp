@@ -8,8 +8,7 @@ void TestTable ();
 int main()
 {
   printf("Chose tested object(Default: 1):\n1) Hash-functions\n2) Hash-table\n");
-  char answer = '\0';
-  scanf(" %c", &answer);
+  char answer = scanf(" %c", &answer) ? answer : '\0';
   if (answer == '2')
     TestTable();
   else

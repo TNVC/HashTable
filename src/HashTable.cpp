@@ -16,7 +16,7 @@ namespace db::collection::map {
 
   const size_t DEFAULT_CAPACITY = 17;
   const size_t      SIZE_FACTOR =  3;
-  const size_t      VECTRO_SIZE = 32;
+  const size_t      VECTOR_SIZE = 32;
 
   static bool CreateHeap(
                          Heap *heap,
@@ -166,7 +166,7 @@ namespace db::collection::map {
 
     ++hashTable->size;
 
-    hash::Hash hash = hash::GetHash(key, VECTRO_SIZE);
+    hash::Hash hash = hash::GetHash(key, VECTOR_SIZE);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
@@ -192,7 +192,7 @@ namespace db::collection::map {
 
     if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY);
 
-    hash::Hash hash = hash::GetHash(key, VECTRO_SIZE);
+    hash::Hash hash = hash::GetHash(key, VECTOR_SIZE);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
@@ -221,7 +221,7 @@ namespace db::collection::map {
 
     if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY, false);
 
-    hash::Hash hash = hash::GetHash(key, VECTRO_SIZE);
+    hash::Hash hash = hash::GetHash(key, VECTOR_SIZE);
     hash %= hashTable->capacity;
 
     return hashTable->table[hash];
@@ -269,7 +269,7 @@ namespace db::collection::map {
 
     if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY);
 
-    hash::Hash hash = hash::GetHash(key, VECTRO_SIZE);
+    hash::Hash hash = hash::GetHash(key, VECTOR_SIZE);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];

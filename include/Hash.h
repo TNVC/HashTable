@@ -5,15 +5,17 @@
 namespace db::hash
 {
 
+  typedef size_t Hash;
+  extern "C" Hash GetHash(const void *reference, size_t size);
+
+#if 0
   typedef unsigned Error;
-  typedef size_t    Hash;
 
   enum  ErrorCode {
     OK           = 0 << 0,
     INVALIDTYPE  = 1 << 0,
   };
 
-#if 0
   enum HashType {
     MIN,
     Const,
@@ -31,7 +33,5 @@ namespace db::hash
 
   bool SetHashType(HashType type, Error *error = nullptr);
 #endif
-
-  extern "C" Hash GetHash(const void *reference, size_t size);
 
 }

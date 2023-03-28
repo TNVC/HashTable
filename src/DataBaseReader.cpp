@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
+#pragma GCC diagnostic ignored "-Wunused-result"
+
 namespace db::loader {
 
   const size_t VECTOR_SIZE = 32;

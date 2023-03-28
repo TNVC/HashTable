@@ -1,6 +1,5 @@
 #include "Test.h"
 
-#include "PropertiesReader.h"
 #include "DataBaseReader.h"
 #include "Hash.h"
 
@@ -22,7 +21,8 @@ namespace db::test {
     assert(result);
     *result = {};
     result->size = TABLE_SIZE;
-    result->allocation = (unsigned short *) calloc(TABLE_SIZE, sizeof(unsigned short));
+    result->allocation = (unsigned short *)
+      calloc(TABLE_SIZE, sizeof(unsigned short));
     assert(result->allocation);
   }
 
@@ -137,7 +137,7 @@ namespace db::test {
     assert(result);
     assert(name);
 
-    strncpy(result->name, name, MAX_TEST_NAME_SIZE);
+    strncpy(result->name, name, MAX_TEST_NAME_SIZE - 1);
   }
 
   void Test(TestTable *result)
@@ -168,7 +168,7 @@ namespace db::test {
           db::collection::map::ContainsKey(
                                            &result->table,
                                            (__m256i *) searchTable[i % 10]
-                                           );
+                                          );
         if (!wasFound)
           printf("Test failed: \"%s\"\n", searchTable[i % 10]);
       }

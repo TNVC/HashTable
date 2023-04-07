@@ -18,8 +18,8 @@ namespace db::test {
     unsigned short *allocation;
   };
 #endif
+
   struct TestTable {
-    char name[MAX_TEST_NAME_SIZE];
     db::collection::map::HashTable table;
     char *freeTable;
   };
@@ -36,7 +36,6 @@ namespace db::test {
   void  CreateTest(TestTable *result);
   void DestroyTest(TestTable *result);
 
-  void SetTestName(TestTable *result, const char *name);
   void Test(TestTable *result);
 
 }

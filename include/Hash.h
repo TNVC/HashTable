@@ -6,7 +6,7 @@ namespace db::hash
 {
 
   typedef size_t Hash;
-  extern "C" Hash GetHash(const void *reference, size_t size);
+  extern "C" Hash GetHash(const char *reference);
 
 #if 0
   typedef unsigned Error;

@@ -15,7 +15,7 @@
 namespace db::collection::map {
 
   const size_t DEFAULT_CAPACITY = 17;
-  const size_t      SIZE_FACTOR =  3;
+  const size_t      SIZE_FACTOR = 30;
   const size_t      VECTOR_SIZE = 32;
 
   static bool CreateHeap(
@@ -121,7 +121,6 @@ namespace db::collection::map {
     hashTable->table = (Node **) calloc(capacity, sizeof(Node *));
     if (!hashTable->table) ERROR(ErrorCode::BADALLOC, false);
 
-
     if (!CreateHeap(&hashTable->heap, capacity, error))
       return false;
 
@@ -134,6 +133,17 @@ namespace db::collection::map {
   bool DestroyHashTable(HashTable *hashTable, Error *error)
   {
     if (!hashTable) ERROR(ErrorCode::NULLPTR, false);
+
+    /*
+    Node *temp = nullptr;
+    for (size_t i = 0; i < hashTable->capacity; ++i)
+      while (hashTable->table[i])
+        {
+          temp = hashTable->table[i];
+          hashTable->table[i] = temp->next;
+          free(temp);
+        }
+    */
 
     free(hashTable->table);
     free(hashTable->heap.buffer);
@@ -156,9 +166,9 @@ namespace db::collection::map {
     if (!IsValidValue(value)) ERROR(ErrorCode::INVALIDVALUE);
 
     Node *newNode = (Node *)
+      //calloc(1, sizeof(Node));
       Malloc(&hashTable->heap, 1, error);
     if (!newNode) ERROR(ErrorCode::BADALLOC);
-
     if (!CopyKey  (&newNode->key  , key  ))
       { free(newNode); ERROR(ErrorCode::UNKNOWN); }
     if (!CopyValue(&newNode->value, value))
@@ -166,7 +176,7 @@ namespace db::collection::map {
 
     ++hashTable->size;
 
-    hash::Hash hash = hash::GetHash(key, VECTOR_SIZE);
+    hash::Hash hash = GetHash(key);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
@@ -192,7 +202,7 @@ namespace db::collection::map {
 
     if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY);
 
-    hash::Hash hash = hash::GetHash(key, VECTOR_SIZE);
+    hash::Hash hash = GetHash(key);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
@@ -217,14 +227,9 @@ namespace db::collection::map {
                    Error *error
                   )
   {
-    if (!hashTable) ERROR(ErrorCode::NULLPTR, false);
+    if (!hashTable || !key) ERROR(ErrorCode::NULLPTR, false);
 
-    if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY, false);
-
-    hash::Hash hash = hash::GetHash(key, VECTOR_SIZE);
-    hash %= hashTable->capacity;
-
-    return hashTable->table[hash];
+    return hashTable->table[GetHash(key) % hashTable->capacity];
   }
 
   bool ContainsValue(
@@ -233,9 +238,7 @@ namespace db::collection::map {
                      Error *error
                     )
   {
-    if (!hashTable) ERROR(ErrorCode::NULLPTR, false);
-
-    if (!IsValidValue(value)) ERROR(ErrorCode::INVALIDVALUE, false);
+    if (!hashTable || !value) ERROR(ErrorCode::NULLPTR, false);
 
     for (size_t i = 0; i < hashTable->capacity; ++i)
       {
@@ -269,7 +272,7 @@ namespace db::collection::map {
 
     if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY);
 
-    hash::Hash hash = hash::GetHash(key, VECTOR_SIZE);
+    hash::Hash hash = GetHash(key);
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
@@ -292,6 +295,7 @@ namespace db::collection::map {
     previous->next = temp->next;
     CopyValue(value, temp->value);
 
+    //free(temp);
     Free(&hashTable->heap, temp, 1, error);
   }
 

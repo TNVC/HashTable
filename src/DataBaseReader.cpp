@@ -18,6 +18,40 @@ namespace db::loader {
                      const char *path
                     )
   {
+    /*
+    assert(map);
+    assert(path);
+
+    FILE *file = fopen(path, "r");
+    if (!file) return nullptr;
+
+    size_t size = GetFileSize(path);
+
+    char *buffer = (char *) calloc(size + 1, sizeof(char));
+    if (!buffer) { fclose(file); return nullptr; }
+
+    fread(buffer, size, sizeof(char), file);
+    fclose(file);
+
+    char *key   =  buffer;
+    char *value = nullptr;
+    do
+      {
+        value = strchr(key, '=');
+        if (!value) { free(buffer); return nullptr; }
+
+        *value++ = '\0';
+
+        char *temp = strchr(value, '\n');
+        if (temp) *temp++ = '\0';
+
+        db::collection::map::Put(map, key, value);
+
+        key = temp;
+      } while (key && *key);
+
+    return buffer;
+    */
     namespace table = db::collection::map;
 
     assert(map);

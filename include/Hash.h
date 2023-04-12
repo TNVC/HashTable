@@ -1,12 +1,16 @@
 #pragma once
 
 #include <stddef.h>
+#include <x86intrin.h>
+
+namespace db::hash {
+  typedef size_t Hash;
+}
+extern "C" db::hash::Hash GetHash(const __m256i *reference);
 
 namespace db::hash
 {
-
-  typedef size_t Hash;
-  extern "C" Hash GetHash(const char *reference);
+  //extern "C" Hash GetHash(const char *reference);
 
 #if 0
   typedef unsigned Error;

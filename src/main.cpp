@@ -46,9 +46,6 @@ void TestTable()
 {
   db::test::TestTable result{};
   db::test::CreateTest(&result);
-
-  db::test::SetTestName(&result, "UpdateTable#O3");
   db::test::Test(&result);
-
   db::test::DestroyTest(&result);
 }

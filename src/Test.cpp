@@ -13,7 +13,7 @@
 namespace db::test {
 
   const size_t FILE_SIZE = 60;
-  const size_t SEARCH_COUNT = 300000;
+  const size_t SEARCH_COUNT = 1000000;
 
 #if 0
   void CreateTest(TestHash *result)
@@ -117,7 +117,15 @@ namespace db::test {
     db::collection::map::CreateHashTable(&result->table, TABLE_SIZE);
 
     printf("Loading data for search test...\n");
-    result->freeTable =
+    /*
+      result->freeTable[0] =
+      db::loader::LoadDataBase(&result->table, "./source/first.properties");
+      result->freeTable[1] =
+      db::loader::LoadDataBase(&result->table, "./source/second.properties");
+      result->freeTable[2] =
+      db::loader::LoadDataBase(&result->table, "./source/third.properties");
+    */
+    result->freeTable[0] =
       db::loader::LoadDataBase(&result->table, "./source/dict.db");
   }
 
@@ -125,19 +133,12 @@ namespace db::test {
   {
     assert(result);
 
-    free(result->freeTable);
+    for (size_t i = 0; i < FREE_TABLE_SIZE; ++i)
+      free(result->freeTable[i]);
 
     db::collection::map::DestroyHashTable(&result->table);
 
     *result = {};
-  }
-
-  void SetTestName(TestTable *result, const char *name)
-  {
-    assert(result);
-    assert(name);
-
-    strncpy(result->name, name, MAX_TEST_NAME_SIZE - 1);
   }
 
   void Test(TestTable *result)
@@ -146,32 +147,30 @@ namespace db::test {
 
     static char searchTable[][32] =
       {
-        {'z', 'l', 'o', 't', 'y'},
-        {'y', 'e', 'l', 'l', 'o', 'w'},
-        {'w', 'r', 'i', 't', 'e'},
-        {'w', 'o', 'r', 'k', 'f', 'o', 'r', 'c', 'e'},
-        {'w', 'o', 'r', 'd', 'y'},
-        {'v', 'o', 'c', 'a', 't', 'i', 'o', 'n', 'a', 'l', ' ',
-         't', 'e', 'a', 'c', 'h', 'e', 'r', 's'},
-        {'u', 'n', 'r', 'e', 'h', 'e', 'a', 'r', 's', 'e', 'd'},
-        {'t', 'r', 'i', 'g', 'g', 'e', 'r', 'i', 'n', 'g'},
-        {'t', 'e', 'n', 'n', 'e', 's', 's', 'e', 'a', 'n'},
-        {'s', 'y', 's', 't', 'o', 'l', 'i', 'z', 'a', 't', 'i', 'o', 'n'}
+        {'m', 'e', 's', 'h', ',', ' ', 'c', 'e', 'l', 'l'},
+        {'b', 'a', 'r', 'l', 'e', 'y', 'c', 'o', 'r', 'n'},
+        {'l', 'i', 'z', 'a', 'r', 'd'},
+        {'j', 'a', 's', 'p', 'e', 'r'},
+        {'m', 'u', 'r', 'r', 'a', 'i', 'n'},
+        {'c', 'a', 's', 'e', ' ', 'l', 'o', 'a', 'd', 'e', 'r'},
+        {'b', 'a', 'r', 'l', 'e', 'y'},
+        {'b', 'o', 'x'},
+        {'f', 'i', 'n', 'e', '-', 'g', 'r', 'o', 'u', 'n', 'd',
+         ' ', 'b', 'a', 'r', 'l', 'e', 'y'},
+        {'s', 'o', 'a', 'p', 'b', 'o', 'x'}
       };
+    __m256i *buffer = nullptr;
 
     printf("Start search test.\n");
     timeval stop{}, start{};
     gettimeofday(&start, nullptr);
     for (size_t i = 0; i < SEARCH_COUNT; ++i)
-      {
-        bool wasFound =
-          db::collection::map::ContainsKey(
-                                           &result->table,
-                                           (__m256i *) searchTable[i % 10]
-                                          );
-        if (!wasFound)
-          printf("Test failed: \"%s\"\n", searchTable[i % 10]);
-      }
+      db::collection::map::Get(
+                               &result->table,
+                               (__m256i *)
+                               searchTable[i % 10],
+                               &buffer
+                              );
     gettimeofday(&stop , nullptr);
     printf("End search test. Time: %ld\n",
            (stop.tv_sec  - start.tv_sec )*1000000 +

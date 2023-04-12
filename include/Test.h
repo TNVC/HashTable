@@ -9,7 +9,7 @@ namespace db::test {
 
   const size_t MAX_TEST_NAME_SIZE = 1 << 8;
   const size_t TABLE_SIZE = 112111;//13441;//7879;//4789;//607;//10691;//
-
+  const size_t FREE_TABLE_SIZE = 3;
 #if 0
   struct TestHash {
     char name[MAX_TEST_NAME_SIZE];
@@ -21,7 +21,7 @@ namespace db::test {
 
   struct TestTable {
     db::collection::map::HashTable table;
-    char *freeTable;
+    char *freeTable[FREE_TABLE_SIZE];
   };
 
 #if 0

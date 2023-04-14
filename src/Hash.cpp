@@ -95,26 +95,28 @@ R"(
 */
 namespace db::hash
 {
+#if 0
+  const Hash START_HASH = 17;
 
-  /*
-  static Hash GetConstHash        (const void *reference, size_t size);
-  static Hash GetLengthHash       (const void *reference, size_t size);
-  static Hash GetSummaryHash      (const void *reference, size_t size);
-  static Hash GetSummaryLengthHash(const void *reference, size_t size);
-  extern "C"
-  //static
-         Hash GetROLHash          (const void *reference, size_t size);
-  extern "C"
-  //static
-         Hash GetRORHash          (const void *reference, size_t size);
-  extern "C"
-  //static
-         Hash GetCRCHash          (const void *reference, size_t size);
-  extern "C"
-  //static
-         Hash GetGNUHash          (const void *reference, size_t size);
-  */
-  /*
+  //  /*
+  static Hash GetConstHash        (const char *reference);
+  static Hash GetLengthHash       (const char *reference);
+  static Hash GetSummaryHash      (const char *reference);
+  static Hash GetSummaryLengthHash(const char *reference);
+  //extern "C"
+  static
+         Hash GetROLHash          (const char *reference);
+  //extern "C"
+  static
+         Hash GetRORHash          (const char *reference);
+  //extern "C"
+  static
+         Hash GetCRCHash          (const char *reference);
+  //extern "C"
+  static
+         Hash GetGNUHash          (const char *reference);
+  //  */
+  //  /*
   static HashType Type = HashType::Const;
 
   const char *ToString(HashType type, Error *error)
@@ -145,22 +147,13 @@ namespace db::hash
 
     return true;
   }
-  */
-  /*
+//  */
+  //  /*
   Hash GetHash(const char *reference)
   {
-    if (!reference) return 0;
-
-    size_t size = strlen(reference);
-    Hash hash = START_HASH;
-    for (size_t i = 0; i < size; ++i)
-      hash = (hash << 5) + hash + (uint8_t) reference[i];
-
-    return hash;
-#if 0
     #define CASE(TYPE)                                  \
       case HashType::TYPE:                              \
-        return Get ## TYPE ## Hash(reference, size)
+        return Get ## TYPE ## Hash(reference)
     switch (Type)
       {
         CASE(Const);
@@ -172,82 +165,79 @@ namespace db::hash
         CASE(CRC);
         CASE(GNU);
       default:
-        return GetConstHash(reference, size);
+        return GetConstHash(reference);
       }
     #undef CASE
-#endif
   }
-  */
-#if 0
-  static Hash GetConstHash(const void *reference, size_t size)
+//  */
+  //#if 0
+  static Hash GetConstHash(const char *reference)
   {
     return 0;
   }
 
-  static Hash GetLengthHash(const void *reference, size_t size)
+  static Hash GetLengthHash(const char *reference)
   {
-    return size;
+    return strlen(reference);
   }
 
-  static Hash GetSummaryHash(const void *reference, size_t size)
+  static Hash GetSummaryHash(const char *reference)
   {
     if (!reference) return 0;
 
     Hash hash = 0;
 
+    size_t size = strlen(reference);
     for (size_t i = 0; i < size; ++i)
-      hash += (Hash) ((const char *)reference)[i];
+      hash += (Hash) reference[i];
 
     return hash;
   }
 
-  static Hash GetSummaryLengthHash(const void *reference, size_t size)
+  static Hash GetSummaryLengthHash(const char *reference)
   {
     if (!reference) return 0;
 
     Hash hash = 0;
 
+    size_t size = strlen(reference);
     for (size_t i = 0; i < size; ++i)
-      hash += (Hash) ((const char *)reference)[i];
+      hash += (Hash) reference[i];
 
     return hash / size;
   }
-#endif
+  //#endif
 
-#if 0
-  static Hash GetROLHash(const void *reference, size_t size)
+  //#if 0
+  static Hash GetROLHash(const char *reference)
   {
     if (!reference) return 0;
-
-    const char *charReference = (const char *) reference;
 
     Hash hash = 0;
     size_t hashBitSize = 8*sizeof(Hash) - 1;
     Hash shiftedBit = 1 << hashBitSize;
 
-    while (*charReference)
-      hash = (hash << 1) + ((hash & shiftedBit) >> hashBitSize) + (Hash) *charReference++;
+    while (*reference)
+      hash = (hash << 1) + ((hash & shiftedBit) >> hashBitSize) + (Hash) *reference++;
 
     return hash;
   }
 
-  static Hash GetRORHash(const void *reference, size_t size)
+  static Hash GetRORHash(const char *reference)
   {
     if (!reference) return 0;
-
-    const char *charReference = (const char *) reference;
 
     Hash hash = 0;
     size_t hashBitSize = 8*sizeof(Hash) - 1;
     Hash shiftedBit = 1;
 
-    while (*charReference)
-      hash = (hash >> 1) + ((hash & shiftedBit) << hashBitSize) + (Hash) *charReference++;
+    while (*reference)
+      hash = (hash >> 1) + ((hash & shiftedBit) << hashBitSize) + (Hash) *reference++;
 
     return hash;
   }
 
-  static Hash GetCRCHash(const void *reference, size_t size)
+  static Hash GetCRCHash(const char *reference)
   {
     if (!reference) return 0;
 
@@ -256,32 +246,32 @@ namespace db::hash
 
     Hash hash = 0;
 
-    const char *charReference = (const char *) reference;
-    while (*charReference)
+    while (*reference)
       {
         for (int i = 7; i >= 0; i--)
           {
-            hash = (hash << 1) + ((*charReference >> i) & 1);
+            hash = (hash << 1) + ((*reference >> i) & 1);
             if (hash & polOldBit)
               hash ^= polynomial;
           }
-        ++charReference;
+        ++reference;
       }
 
     return hash;
   }
 
-  static Hash GetGNUHash(const void *reference, size_t size)
+  static Hash GetGNUHash(const char *reference)
   {
     if (!reference) return 0;
 
     const uint8_t *uint8Ref = (const uint8_t *) reference;
     Hash hash = START_HASH;
+    size_t size = strlen(reference);
     for (size_t i = 0; i < size; ++i)
       hash = (hash << 5) + hash + uint8Ref[i];
 
     return hash;
   }
-#endif
+  #endif
 
 }

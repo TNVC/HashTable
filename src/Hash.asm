@@ -1,7 +1,6 @@
 section .text
 global GetHash
 
-global GetGNUHash
   ;; GetGNUHash
   ;; @param  [rdi] reference - const pointer to object
   ;; @param  [rsi] size      - size of object
@@ -30,7 +29,7 @@ GetGNUHash:
 .end:
   ret                           ; return hash
 
-global GetCRCHash
+  ;; global GetCRCHash
   ;; GetCRCHash
   ;; @param  [rdi] reference - const pointer to object
   ;; @param  [rsi] size      - size of object

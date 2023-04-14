@@ -14,7 +14,7 @@ ax  = fig.add_subplot(1, 1, 1)
 
 ax.bar(list(range(stat_size)), stat)
 
-mean = float(sys.argv[2])
+mean = 163900/13441#float(sys.argv[2])
 
 ax.plot([0, stat_size], [mean, mean], label = "Average value", color = "red", alpha = 0.5)
 
@@ -26,4 +26,4 @@ ax.grid(True, alpha = 0.3)
 ax.legend()
 plt.savefig("plots/" + sys.argv[1] + ".png")
 
-os.remove("plots/" + sys.argv[1] + ".csv")
+#os.remove("plots/" + sys.argv[1] + ".csv")

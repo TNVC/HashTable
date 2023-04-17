@@ -52,6 +52,7 @@ namespace db::loader {
 
     return buffer;
     */
+    ///*
     namespace table = db::collection::map;
 
     assert(map);
@@ -86,6 +87,7 @@ namespace db::loader {
       } while (index < size);
 
     return buffer;
+    //*/
   }
 
   static size_t GetFileSize(const char *fileName)

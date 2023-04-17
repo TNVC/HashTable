@@ -32,7 +32,6 @@ GetGNUHash:
   ;; global GetCRCHash
   ;; GetCRCHash
   ;; @param  [rdi] reference - const pointer to object
-  ;; @param  [rsi] size      - size of object
   ;; @return [rax] Hash(size_t)
 GetHash:
 GetCRCHash:

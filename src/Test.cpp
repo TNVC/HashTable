@@ -127,6 +127,7 @@ namespace db::test {
     */
     result->freeTable[0] =
       db::loader::LoadDataBase(&result->table, "./source/dict.db");
+
   }
 
   void DestroyTest(TestTable *result)
@@ -160,6 +161,7 @@ namespace db::test {
         {'s', 'o', 'a', 'p', 'b', 'o', 'x'}
       };
     __m256i *buffer = nullptr;
+
 
     printf("Start search test.\n");
     timeval stop{}, start{};

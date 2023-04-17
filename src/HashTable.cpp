@@ -18,6 +18,7 @@ namespace db::collection::map {
   const size_t      SIZE_FACTOR = 30;
   const size_t      VECTOR_SIZE = 32;
 
+  ///*
   static bool CreateHeap(
                          Heap *heap,
                          size_t size,
@@ -112,7 +113,7 @@ namespace db::collection::map {
 
     heap->freeList = freeNode;
   }
-
+  //*/
   bool CreateHashTable(HashTable *hashTable, size_t capacity, Error *error)
   {
     if (!hashTable) ERROR(ErrorCode::NULLPTR, false);

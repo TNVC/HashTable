@@ -23,6 +23,7 @@ namespace db::collection::map {
     typedef String Key  ;
     typedef String Value;
   */
+
   typedef __m256i *AvxStr;
   typedef AvxStr  Key  ;
   typedef AvxStr  Value;
@@ -114,6 +115,7 @@ namespace db::collection::map {
                               _mm256_loadu_si256(first ),
                               _mm256_loadu_si256(second)
                               ); }
+
   /*
     inline bool IsValidKey  (const Key   key  ) { return key  ; }
     inline bool IsValidValue(const Value value) { return value; }

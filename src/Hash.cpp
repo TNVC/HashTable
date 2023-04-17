@@ -19,24 +19,12 @@
 /*
 db::hash::Hash GetHash(const __m256i *reference)
 {
-  if (!reference) return 0;
-
-  const __int64_t *ref = (const __int64_t *) reference;
-
-  db::hash::Hash hash
-       = _mm_crc32_u64(0   , ref[0]);
-  hash = _mm_crc32_u64(hash, ref[1]);
-  hash = _mm_crc32_u64(hash, ref[2]);
-  hash = _mm_crc32_u64(hash, ref[3]);
-
-  return hash;
   asm(
 R"(
 .intel_syntax noprefix
 
   xor rax, rax
-
-  test rdi, rdi
+  cmp rdi, 0x0
   je .end
 
   crc32q rax, qword [rdi + 0x00]
@@ -46,14 +34,58 @@ R"(
 
 .end:
   ret
-
 .att_syntax prefix
 )"
-     );
+      );
 }
 */
 /*
 const db::hash::Hash START_HASH = 17;
+db::hash::Hash GetHash(const __m256i *reference)
+{
+    /*
+  if (!reference) return 0;
+
+  db::hash::Hash hash = START_HASH;
+  size_t size = strlen(reference);
+  for (size_t i = 0; i < size; ++i)
+    hash = (hash << 5) + hash + (db::hash::Hash) reference[i];
+
+  return hash;
+
+  asm(
+R"(
+.intel_syntax noprefix
+
+  mov eax, 0x11
+
+  cmp rdi, 0x0
+  je .end
+
+  jmp .check
+.start:
+  mov rsi, rax
+  shl rsi, 0x5
+  lea rax, [rax + rsi]
+
+  movzxb rsi, byte [rdi]
+  add rax, rsi
+  inc rdi
+
+.check:
+  cmpb byte [rdi], 0x0
+  jne .start
+
+.end:
+  ret
+
+.att_syntax prefix
+)"
+     );
+
+}
+*/
+/*
 
 db::hash::Hash GetHash(const __m256i *reference)
 {

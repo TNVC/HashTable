@@ -198,28 +198,81 @@ namespace db::collection::map {
            Error *error
           )
   {
-    if (!hashTable) ERROR(ErrorCode::NULLPTR);
-    if (!value    ) ERROR(ErrorCode::NULLPTR);
+    ///*
+    asm(
+R"(
+.intel_syntax noprefix
 
-    if (!IsValidKey(key)) ERROR(ErrorCode::INVALIDKEY);
+  mov rax, rdi
+  or rax, rsi
+  or rax, rdx
+  jz .nullptr
 
-    hash::Hash hash = GetHash(key);
-    hash %= hashTable->capacity;
+  xchg rdi, rsi
+  mov r8, rsi
+  mov r9, rdi
+  call GetHash@PLT
+  mov rsi, r8
+  mov rdi, r9
+
+  mov r8, rdx
+  xor edx, edx
+  divq [rsi + 0x8]
+
+  mov rsi, [rsi + 0x10]
+  mov r9, [rsi + rdx*0x8]
+
+  test r9, r9
+  jz .none
+
+.start:
+  mov rsi, [r9]
+  call strcmp@PLT
+
+  test eax, eax
+  jz .find
+
+  mov r9, [r9 + 0x10]
+.check:
+  test r9, r9
+  jnz .start
+
+  movq [r8], 0x0
+  ret
+
+.find:
+  mov rax, [r9 + 0x8]
+  mov [r8], rax
+
+.nullptr:
+  ret
+
+.none:
+  movq [r8], 0x0
+  ret
+
+.att_syntax prefix
+)"
+       );
+    //*/
+    /*
+    if (!(hashTable || value || key))
+      ERROR(ErrorCode::NULLPTR);
+
+    hash::Hash hash =
+      GetHash(key) % hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
-    if (!temp) ERROR(ErrorCode::HASNTKEY);
-
-    if (!temp->next)
-      {
-        CopyValue(value, temp->value);
-        return;
-      }
+    if (!temp)
+      { *value = nullptr; return; }
 
     for ( ; temp->next; temp = temp->next)
       if (AreKeysEqual(key, temp->key)) break;
-    if (!AreKeysEqual(key, temp->key)) ERROR(ErrorCode::HASNTKEY);
+    if (!AreKeysEqual(key, temp->key))
+      { *value = nullptr; return; }
 
-    CopyValue(value, temp->value);
+    *value = temp->value;
+    //*/
   }
 
   bool ContainsKey(

@@ -119,15 +119,14 @@ namespace db::test {
     printf("Loading data for search test...\n");
     /*
       result->freeTable[0] =
-      db::loader::LoadDataBase(&result->table, "./source/first.properties");
-      result->freeTable[1] =
-      db::loader::LoadDataBase(&result->table, "./source/second.properties");
-      result->freeTable[2] =
-      db::loader::LoadDataBase(&result->table, "./source/third.properties");
+      db::loader::LoadDataBase(&result->table, "./source/dict.db");
     */
     result->freeTable[0] =
-      db::loader::LoadDataBase(&result->table, "./source/dict.db");
-
+      db::loader::LoadDataBase(&result->table, "./source/first.properties");
+    result->freeTable[1] =
+      db::loader::LoadDataBase(&result->table, "./source/second.properties");
+    result->freeTable[2] =
+      db::loader::LoadDataBase(&result->table, "./source/third.properties");
   }
 
   void DestroyTest(TestTable *result)

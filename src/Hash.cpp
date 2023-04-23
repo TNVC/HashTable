@@ -43,16 +43,7 @@ R"(
 const db::hash::Hash START_HASH = 17;
 db::hash::Hash GetHash(const __m256i *reference)
 {
-    /*
-  if (!reference) return 0;
-
-  db::hash::Hash hash = START_HASH;
-  size_t size = strlen(reference);
-  for (size_t i = 0; i < size; ++i)
-    hash = (hash << 5) + hash + (db::hash::Hash) reference[i];
-
-  return hash;
-
+  ///*
   asm(
 R"(
 .intel_syntax noprefix
@@ -82,11 +73,20 @@ R"(
 .att_syntax prefix
 )"
      );
+  //*/
+  /*
+  if (!reference) return 0;
+
+  size_t size = strlen(reference);
+  db::hash::Hash hash = START_HASH;
+  for (size_t i = 0; i < size; ++i)
+    hash = (hash << 5) + hash + (uint8_t) reference[i];
+
+  return hash;
 
 }
-*/
+  */
 /*
-
 db::hash::Hash GetHash(const __m256i *reference)
 {
   if (!reference) return 0;

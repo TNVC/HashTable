@@ -51,7 +51,7 @@ namespace db::loader {
       } while (key && *key);
 
     return buffer;
-    */
+    //*/
     ///*
     namespace table = db::collection::map;
 

@@ -26,7 +26,7 @@ namespace db::collection::map {
   typedef __m256i *AvxStr;
   typedef AvxStr  Key  ;
   typedef AvxStr  Value;
-  
+
   typedef char byte;
 
   struct HeapNode {
@@ -104,6 +104,12 @@ namespace db::collection::map {
   inline bool CopyValue(Value *target, const Value source)
   { *target = source; return true; }
 
+  /*
+    inline bool AreKeysEqual  (const Key   first, const Key   second)
+    { return !strcmp(first, second); }
+    inline bool AreValuesEqual(const Value first, const Value second)
+    { return !strcmp(first, second); }
+  */
   inline bool AreKeysEqual  (const Key   first, const Key   second)
   { return _mm256_testc_si256(
                               _mm256_loadu_si256(first ),
@@ -114,10 +120,5 @@ namespace db::collection::map {
                               _mm256_loadu_si256(first ),
                               _mm256_loadu_si256(second)
                               ); }
-  /*
-    inline bool AreKeysEqual  (const Key   first, const Key   second)
-    { return !strcmp(first, second); }
-    inline bool AreValuesEqual(const Value first, const Value second)
-    { return !strcmp(first, second); }
-  */
+
 }

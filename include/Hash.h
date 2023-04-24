@@ -7,6 +7,7 @@ namespace db::hash {
   typedef size_t Hash;
 }
 extern "C" db::hash::Hash GetHash(const __m256i *reference);
+//extern "C" db::hash::Hash GetHash(const char *reference);
 
 namespace db::hash
 {

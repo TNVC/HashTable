@@ -144,7 +144,7 @@ namespace db::collection::map {
           hashTable->table[i] = temp->next;
           free(temp);
         }
-    */
+    //*/
 
     free(hashTable->table);
     free(hashTable->heap.buffer);
@@ -181,6 +181,7 @@ namespace db::collection::map {
     hash %= hashTable->capacity;
 
     Node *temp = hashTable->table[hash];
+
     if (!temp)
       {
         hashTable->table[hash] = newNode;
@@ -198,9 +199,49 @@ namespace db::collection::map {
            Error *error
           )
   {
-    ///*
+    if (!(hashTable || key || value)) return;
+
+    db::hash::Hash hash =
+      GetHash(key) % hashTable->capacity;
+
+    Node *temp =
+      hashTable->table[hash];
+    if (!temp)
+      { *value = nullptr; return; }
+
     asm(
 R"(
+.intel_syntax noprefix
+  mov rdi, %0
+.start:
+  mov rsi, [%1]
+  vmovdqu ymm0, [rdi]
+  vptest ymm0, [rsi]
+//  call strcmp@PLT
+
+  test eax, eax
+//  jz .find
+  jc .find
+
+  mov %1, [%1 + 0x10]
+.check:
+  test %1, %1
+  jnz .start
+
+  movq [%2], 0x0
+  jmp .ret
+
+.find:
+  mov rax, [%1 + 0x8]
+  mov [%2], rax
+.ret:
+
+.att_syntax prefix
+)":: "a"(key), "r"(temp), "r"(value) : "rcx", "rdx", "rdi", "rsi", "ymm0"
+       );
+    /*
+    asm(
+        R"(
 .intel_syntax noprefix
 
   mov rax, rdi
@@ -227,10 +268,11 @@ R"(
 
 .start:
   mov rsi, [r9]
-  call strcmp@PLT
+  vmovdqu ymm0, [rdi]
+  vptest ymm0, [rsi]
+//call strcmp@PLT
 
-  test eax, eax
-  jz .find
+  jc .find
 
   mov r9, [r9 + 0x10]
 .check:
@@ -253,8 +295,8 @@ R"(
 
 .att_syntax prefix
 )"
-       );
-    //*/
+        );
+    */
     /*
     if (!(hashTable || value || key))
       ERROR(ErrorCode::NULLPTR);

@@ -16,32 +16,11 @@
       if (error) *error = CODE;                 \
       return __VA_ARGS__;                       \
     } while (0)
-/*
-db::hash::Hash GetHash(const __m256i *reference)
-{
-  asm(
-R"(
-.intel_syntax noprefix
 
-  xor rax, rax
-  cmp rdi, 0x0
-  je .end
-
-  crc32q rax, qword [rdi + 0x00]
-  crc32q rax, qword [rdi + 0x08]
-  crc32q rax, qword [rdi + 0x10]
-  crc32q rax, qword [rdi + 0x18]
-
-.end:
-  ret
-.att_syntax prefix
-)"
-      );
-}
-*/
 /*
 const db::hash::Hash START_HASH = 17;
-db::hash::Hash GetHash(const __m256i *reference)
+//db::hash::Hash GetHash(const __m256i *reference)
+db::hash::Hash GetHash(const char *reference)
 {
   ///*
   asm(
@@ -85,46 +64,7 @@ R"(
   return hash;
 
 }
-  */
-/*
-db::hash::Hash GetHash(const __m256i *reference)
-{
-  if (!reference) return 0;
-
-  size_t size = strlen(reference);
-  db::hash::Hash hash = START_HASH;
-  for (size_t i = 0; i < size; ++i)
-    hash = (hash << 5) + hash + (uint8_t) reference[i];
-
-  return hash;
-  asm(
-R"(
-.intel_syntax noprefix
-
-  mov eax, 0x11
-  cmp rdi, 0x0
-  je .end
-
-  jmp .check
-.start:
-  mov rsi, rax
-  shl rsi, 0x5
-  lea rax, [rax + rsi]
-
-  movzb rsi, byte [rdi]
-  add rax, rsi
-  inc rdi
-.check:
-  cmpb byte [rdi], 0x0
-  jne .start
-
-.end:
-  ret
-.att_syntax prefix
-)"
-     );
-}
-*/
+  //*/
 namespace db::hash
 {
 #if 0
